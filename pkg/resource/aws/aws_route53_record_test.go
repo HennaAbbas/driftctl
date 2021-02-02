@@ -1,29 +1,37 @@
-package aws_test
+package aws
 
 import (
 	"testing"
 
-	"github.com/cloudskiff/driftctl/test/acceptance"
+	"github.com/aws/aws-sdk-go/aws"
 )
 
-func TestAcc_AwsRoute53Record_WithFQDNAsId(t *testing.T) {
-	acceptance.Run(t, acceptance.AccTestCase{
-		Path: "./testdata/acc/aws_route53_record",
-		Args: []string{"scan", "--filter", "Type=='aws_route53_record'"},
-		Checks: []acceptance.AccCheck{
-			{
-				Env: map[string]string{
-					"AWS_REGION": "us-east-1",
-				},
-				Check: func(result *acceptance.ScanResult, stdout string, err error) {
-					if err != nil {
-						t.Fatal(err)
-					}
-					result.AssertDriftCountTotal(0)
-					result.Equal(0, result.Summary().TotalDeleted)
-					result.Equal(8, result.Summary().TotalManaged)
-				},
+func TestAwsRoute53Record_String(t *testing.T) {
+	tests := []struct {
+		name   string
+		record AwsRoute53Record
+		want   string
+	}{
+		{name: "test route53 record stringer with fqdn and type and zoneid",
+			record: AwsRoute53Record{
+				Fqdn:   aws.String("true"),
+				Type:   aws.String("type"),
+				ZoneId: aws.String("zone_id"),
 			},
+			want: "true (type) (zone: zone_id)",
 		},
-	})
+		{name: "test route53 record stringer without values",
+			record: AwsRoute53Record{
+				Fqdn: nil,
+			},
+			want: " () (zone: )",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.record.String(); got != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
