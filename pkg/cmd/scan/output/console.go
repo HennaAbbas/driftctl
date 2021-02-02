@@ -35,11 +35,11 @@ func (c *Console) Write(analysis *analyser.Analysis) error {
 			fmt.Printf("  %s:\n", ty)
 			for _, res := range resources {
 				stringer, ok := res.(fmt.Stringer)
-				fmt.Printf("    - %s", res.TerraformId())
+				humanString := res.TerraformId()
 				if ok {
-					fmt.Printf(" (%s)", stringer.String())
+					humanString = stringer.String()
 				}
-				fmt.Println()
+				fmt.Printf("    - %s\n", humanString)
 			}
 		}
 	}
@@ -51,11 +51,11 @@ func (c *Console) Write(analysis *analyser.Analysis) error {
 			fmt.Printf("  %s:\n", ty)
 			for _, res := range resource {
 				stringer, ok := res.(fmt.Stringer)
-				fmt.Printf("    - %s", res.TerraformId())
+				humanString := res.TerraformId()
 				if ok {
-					fmt.Printf(" (%s)", stringer.String())
+					humanString = stringer.String()
 				}
-				fmt.Println()
+				fmt.Printf("    - %s\n", humanString)
 			}
 		}
 	}
